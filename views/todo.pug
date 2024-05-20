@@ -1,0 +1,32 @@
+doctype html
+html(lang="en")
+  head
+    title EasyTodo
+    link(rel='stylesheet' type='text/css' href='/css/todo.css')
+  body
+    h1 EasyTodo
+    #app
+      form(action='/todos', method='POST')
+        input(type='text', name='taskName', placeholder='e.g. Finish COMP6006 Prac')
+        input(type='text', name='taskDescription', placeholder='Task details') 
+        button(type='submit') Add task
+      br
+      ul
+        each todo in todos
+          li= todo.taskName + ' - ' + todo.taskDescription
+          button.delete-btn(data-task-id=todo._id, onclick='deleteTask("' + todo._id + '")') Delete
+    script.
+      async function deleteTask(taskId) {
+          try {
+              const response = await fetch('/todos/' + taskId, {
+                  method: 'DELETE'
+              });
+              if (response.ok) {
+                  location.reload(); 
+              } else {
+                  console.error('Failed to delete task:', response.statusText);
+              }
+          } catch (error) {
+              console.error('Error deleting task:', error);
+          }
+      }
